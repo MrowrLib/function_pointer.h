@@ -14,9 +14,21 @@ namespace FunctionPointers {
             return new StaticFunctionPointer<ReturnType, Args...>(func);
         }
 
+        template <typename T, typename ReturnType, typename... Args>
+        static IFunctionPointer* make_new(T* object, ReturnType (T::*func)(Args...)) {
+            return new MemberFunctionPointer<T, ReturnType, Args...>(object, func);
+        }
+
         template <typename ReturnType, typename... Args>
         static std::unique_ptr<IFunctionPointer> make_unique(ReturnType (*func)(Args...)) {
             return std::make_unique<StaticFunctionPointer<ReturnType, Args...>>(func);
+        }
+
+        template <typename T, typename ReturnType, typename... Args>
+        static std::unique_ptr<IFunctionPointer> make_unique(
+            T* object, ReturnType (T::*func)(Args...)
+        ) {
+            return std::make_unique<MemberFunctionPointer<T, ReturnType, Args...>>(object, func);
         }
 
         template <typename... Args>
@@ -41,6 +53,15 @@ namespace FunctionPointers {
         ) {
             return std::unique_ptr<IFunctionPointerValue>(
                 make_new(func)->Invoke(make_unique_args(std::forward<Args>(args)...).get())
+            );
+        }
+
+        template <typename T, typename ReturnType, typename... Args>
+        static std::unique_ptr<IFunctionPointerValue> invoke(
+            T* object, ReturnType (T::*func)(Args...), Args&&... args
+        ) {
+            return std::unique_ptr<IFunctionPointerValue>(
+                make_new(object, func)->Invoke(make_unique_args(std::forward<Args>(args)...).get())
             );
         }
     };

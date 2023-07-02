@@ -1,7 +1,5 @@
 # `#include <function_pointer.h>`
 
-# TODO: update README
-
 ```cpp
 #include <function_pointer.h>
 

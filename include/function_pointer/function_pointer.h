@@ -2,9 +2,11 @@
 
 #include <memory>
 
+#include "FunctionPointer.h"
 #include "IFunctionPointerValueArrayDeleter.h"
 #include "MemberFunctionPointer.h"
 #include "StaticFunctionPointer.h"
+
 
 namespace FunctionPointers {
 
@@ -20,14 +22,12 @@ namespace FunctionPointers {
         }
 
         template <typename ReturnType, typename... Args>
-        static std::unique_ptr<IFunctionPointer> make_unique(ReturnType (*func)(Args...)) {
+        static FunctionPointer make_unique(ReturnType (*func)(Args...)) {
             return std::make_unique<StaticFunctionPointer<ReturnType, Args...>>(func);
         }
 
         template <typename T, typename ReturnType, typename... Args>
-        static std::unique_ptr<IFunctionPointer> make_unique(
-            T* object, ReturnType (T::*func)(Args...)
-        ) {
+        static FunctionPointer make_unique(T* object, ReturnType (T::*func)(Args...)) {
             return std::make_unique<MemberFunctionPointer<T, ReturnType, Args...>>(object, func);
         }
 

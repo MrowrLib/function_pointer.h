@@ -86,11 +86,59 @@ target_link_libraries(Example PRIVATE function_pointer::function_pointer)
 
 ## Why?
 
-...
+I needed to store and pass pointers to both:
+- function pointers
+- member function pointers (_from different types_)
+
+So I made this.
+
+Using this, you can create an `FunctionPointer` and pass a pointer to it.
 
 ## How?
 
-,,,
+```cpp
+// Example of a static function to call
+void CallMe(int input) { /* ... */ }
+
+// Example of a class with a member function to call
+class Example {
+    void CallMe(int input) { /* ... */ }    
+}
+```
+
+```cpp
+#include <function_pointer.h>
+
+// You can store a pointer to a static function like this:
+FunctionPointer functionPointer = function_pointer(CallMe);
+
+// This is shorthand for:
+std::unique_ptr<IFunctionPointer> functionPointer =
+  function_pointer::make_unique(CallMe);
+
+// If you want a raw pointer:
+IFunctionPointer* functionPointer = function_pointer::make_new(CallMe);
+
+// And you can invoke the function using the Invoke method:
+functionPointer->Invoke(123);
+```
+
+```cpp
+// You can store a pointer to a member function like this:
+Example example;
+FunctionPointer memberFunctionPointer = function_pointer(&example, &Example::CallMe);
+
+// This is shorthand for:
+std::unique_ptr<IFunctionPointer> memberFunctionPointer =
+  function_pointer::make_unique(&example, &Example::CallMe);
+
+// If you want a raw pointer:
+IFunctionPointer* memberFunctionPointer =
+  function_pointer::make_new(&example, &Example::CallMe);
+
+// And you can invoke the function using the Invoke method:
+memberFunctionPointer->Invoke(123);
+```
 
 ## License
 

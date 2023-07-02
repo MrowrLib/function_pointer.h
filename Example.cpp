@@ -29,7 +29,7 @@ int main() {
     functionPtr->Invoke();
     delete functionPtr;
 
-    auto function = function_pointer::make_unique(CallMe_Static_VoidReturn_NoArgs);
+    FunctionPointer function = function_pointer::make_unique(CallMe_Static_VoidReturn_NoArgs);
     function->Invoke();
 
     function = function_pointer(CallMe_Static_VoidReturn_NoArgs);

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 project(function_pointer VERSION 0.1.0 LANGUAGES CXX)
 set(namespace function_pointer)
 
-option(BUILD_EXAMPLE "Build the example target" ON)
+# option(BUILD_EXAMPLE "Build the example target" ON)
 
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE
@@ -53,8 +53,8 @@ install(FILES
     DESTINATION share/${PROJECT_NAME}
 )
 
-if(BUILD_EXAMPLE)
-    add_executable(Example Example.cpp)
-    target_link_libraries(Example PRIVATE ${PROJECT_NAME})
-    target_compile_features(Example PRIVATE cxx_std_20)
-endif()
+# if(BUILD_EXAMPLE)
+#     add_executable(Example Example.cpp)
+#     target_link_libraries(Example PRIVATE ${PROJECT_NAME})
+#     target_compile_features(Example PRIVATE cxx_std_20)
+# endif()

@@ -94,6 +94,9 @@ So I made this.
 
 Using this, you can create an `FunctionPointer` and pass a pointer to it.
 
+> _Note: I need this for scenarios when I'm working with true function pointers._  
+> _If you have the option of using `std::function` instead, highly recommend using that!_
+
 ## How?
 
 ```cpp

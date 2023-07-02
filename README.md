@@ -86,9 +86,11 @@ target_link_libraries(Example PRIVATE function_pointer::function_pointer)
 
 ## Why?
 
-I needed to store and pass pointers to both:
+I needed to store both:
 - function pointers
 - member function pointers (_from different types_)
+
+And I needed a pointer I could pass around to refer to the function pointer and invoke it.
 
 So I made this.
 

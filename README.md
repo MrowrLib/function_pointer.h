@@ -86,13 +86,13 @@ target_link_libraries(Example PRIVATE function_pointer::function_pointer)
 
 ## Why?
 
-I needed to store and pass pointers to both:
+I needed to store both:
 - function pointers
 - member function pointers (_from different types_)
 
-So I made this.
+And I needed a pointer I could pass around to refer to the function pointer and invoke it.
 
-Using this, you can create an `FunctionPointer` and pass a pointer to it.
+So I made this.
 
 > _Note: I need this for scenarios when I'm working with true function pointers._  
 > _If you have the option of using `std::function` instead, highly recommend using that!_
@@ -100,17 +100,10 @@ Using this, you can create an `FunctionPointer` and pass a pointer to it.
 ## How?
 
 ```cpp
+#include <function_pointer.h>
+
 // Example of a static function to call
 void CallMe(int input) { /* ... */ }
-
-// Example of a class with a member function to call
-class Example {
-    void CallMe(int input) { /* ... */ }    
-}
-```
-
-```cpp
-#include <function_pointer.h>
 
 // You can store a pointer to a static function like this:
 FunctionPointer functionPointer = function_pointer(CallMe);
@@ -127,6 +120,13 @@ functionPointer->Invoke(123);
 ```
 
 ```cpp
+#include <function_pointer.h>
+
+// Example of a class with a member function to call
+class Example {
+    void CallMe(int input) { /* ... */ }    
+}
+
 // You can store a pointer to a member function like this:
 Example example;
 FunctionPointer memberFunctionPointer = function_pointer(&example, &Example::CallMe);

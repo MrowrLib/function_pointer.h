@@ -9,6 +9,10 @@ int  CallMe_Static_IntReturn_NoArgs() {
 void CallMe_Static_VoidReturn_IntArg(int arg) {
     _Log_("Called CallMe_Static_VoidReturn_IntArg with arg: {}", arg);
 }
+int CallMe_Static_IntReturn_MultipleArgs(int arg1, bool arg2, float arg3) {
+    _Log_("~ Called CallMe_Static_IntReturn_MultipleArgs with args: {}, {}, {}", arg1, arg2, arg3);
+    return arg1 + arg3;
+}
 
 class SomeClass {
 public:
@@ -53,6 +57,18 @@ int main() {
 
     auto uniqueResult = function_pointer::invoke(CallMe_Static_IntReturn_NoArgs);
     _Log_("Got int {}", uniqueResult->get<int>());
+
+    function  = function_pointer::make_unique(CallMe_Static_IntReturn_MultipleArgs);
+    argsPtr   = function_pointer::make_new_args(69, true, 3.14f);
+    result    = function->Invoke(argsPtr);
+    resultInt = result->get<int>();
+    _Log_("--> -> CallMe_Static_IntReturn_MultipleArgs returned: {}", resultInt);
+
+    uniqueResult = function_pointer::invoke(function.get(), 30, true, 39.0f);
+    _Log_("--> --> * Got int {}", uniqueResult->get<int>());
+
+    uniqueResult = function_pointer::invoke(function, 30, true, 39.0f);
+    _Log_("--> --> unique Got int {}", uniqueResult->get<int>());
 
     //
     _Log_("MEMBER FUNCTION EXAMPLES");

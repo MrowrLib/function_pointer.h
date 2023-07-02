@@ -7,7 +7,6 @@
 #include "MemberFunctionPointer.h"
 #include "StaticFunctionPointer.h"
 
-
 namespace FunctionPointers {
 
     struct function_pointer {
@@ -62,6 +61,24 @@ namespace FunctionPointers {
         ) {
             return std::unique_ptr<IFunctionPointerValue>(
                 make_new(object, func)->Invoke(make_unique_args(std::forward<Args>(args)...).get())
+            );
+        }
+
+        template <typename... Args>
+        static std::unique_ptr<IFunctionPointerValue> invoke(
+            IFunctionPointer* functionPointer, Args&&... args
+        ) {
+            return std::unique_ptr<IFunctionPointerValue>(
+                functionPointer->Invoke(make_unique_args(std::forward<Args>(args)...).get())
+            );
+        }
+
+        template <typename... Args>
+        static std::unique_ptr<IFunctionPointerValue> invoke(
+            FunctionPointer& functionPointer, Args&&... args
+        ) {
+            return std::unique_ptr<IFunctionPointerValue>(
+                functionPointer->Invoke(make_unique_args(std::forward<Args>(args)...).get())
             );
         }
     };

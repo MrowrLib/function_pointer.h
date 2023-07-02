@@ -18,8 +18,8 @@ void Example() {
     IFunctionPointer* memberFunctionPointer = function_pointer(&example, &Example::CallMe);
 
     // Call the function pointers
-    functionPointer->Invoke(123);
-    memberFunctionPointer->Invoke(123);
+    function_pointer::invoke(functionPointer, 123);
+    function_pointer::invoke(memberFunctionPointer, 123);
 }
 ```
 
@@ -115,8 +115,11 @@ std::unique_ptr<IFunctionPointer> functionPointer =
 // If you want a raw pointer:
 IFunctionPointer* functionPointer = function_pointer::make_new(CallMe);
 
-// And you can invoke the function using the Invoke method:
-functionPointer->Invoke(123);
+// And you can invoke the function:
+function_pointer::invoke(functionPointer, 123, <additional args here>);
+
+// If useful, you can invoke static function pointers directly too:
+function_pointer::invoke(CallMe, 123, <additional args here>);
 ```
 
 ```cpp
@@ -139,8 +142,11 @@ std::unique_ptr<IFunctionPointer> memberFunctionPointer =
 IFunctionPointer* memberFunctionPointer =
   function_pointer::make_new(&example, &Example::CallMe);
 
-// And you can invoke the function using the Invoke method:
-memberFunctionPointer->Invoke(123);
+// And you can invoke the function:
+function_pointer::invoke(memberFunctionPointer, 123, <additional args here>);
+
+// If useful, you can invoke static function pointers directly too:
+function_pointer::invoke(&example, &Example::CallMe, 123, <additional args here>);
 ```
 
 ## License

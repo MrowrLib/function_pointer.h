@@ -25,11 +25,14 @@ public:
 int main() {
     _Log_("STATIC FUNCTION EXAMPLES");
 
-    auto* functionPtr = function_pointer::make_new(CallMe_Static_VoidReturn_NoArgs);
+    IFunctionPointer* functionPtr = function_pointer::make_new(CallMe_Static_VoidReturn_NoArgs);
     functionPtr->Invoke();
     delete functionPtr;
 
     auto function = function_pointer::make_unique(CallMe_Static_VoidReturn_NoArgs);
+    function->Invoke();
+
+    function = function_pointer(CallMe_Static_VoidReturn_NoArgs);
     function->Invoke();
 
     function       = function_pointer::make_unique(CallMe_Static_IntReturn_NoArgs);
@@ -63,6 +66,9 @@ int main() {
 
     function =
         function_pointer::make_unique(&someClass, &SomeClass::CallMe_Member_VoidReturn_NoArgs);
+    function->Invoke();
+
+    function = function_pointer(&someClass, &SomeClass::CallMe_Member_VoidReturn_NoArgs);
     function->Invoke();
 
     function =

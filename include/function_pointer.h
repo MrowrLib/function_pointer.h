@@ -1,5 +1,8 @@
-#include "function_pointer/FunctionPointer.h"
-#include "function_pointer/StaticFunctionPointer.h"
+#pragma once
 
+#include "function_pointer/function_pointer.h"
 
-typedef FunctionPointers::FunctionPointer function_pointer;
+typedef FunctionPointers::function_pointer function_pointer;
+typedef FunctionPointers::IFunctionPointer IFunctionPointer;
+
+#define function_pointer(...) function_pointer::make_unique(__VA_ARGS__)

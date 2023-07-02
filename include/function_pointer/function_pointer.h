@@ -8,7 +8,7 @@
 
 namespace FunctionPointers {
 
-    struct FunctionPointer {
+    struct function_pointer {
         template <typename ReturnType, typename... Args>
         static IFunctionPointer* make_new(ReturnType (*func)(Args...)) {
             return new StaticFunctionPointer<ReturnType, Args...>(func);

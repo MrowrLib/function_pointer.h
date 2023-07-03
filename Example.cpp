@@ -107,4 +107,19 @@ int main() {
 
     uniqueResult = function_pointer::invoke(&someClass, &SomeClass::CallMe_Member_IntReturn_NoArgs);
     _Log_("Got int {}", uniqueResult->get<int>());
+
+    //
+    _Log_("And you can also use std::function");
+
+    functionPtr = new_function_pointer([]() { _Log_("Called a lambda! (pointer)"); });
+    functionPtr->Invoke();
+
+    function = function_pointer([]() { _Log_("Called a lambda! (unique)"); });
+    function->Invoke();
+
+    int captureMe = 123;
+    function      = function_pointer([captureMe]() {
+        _Log_("Called a lambda! (unique) with capture: {}", captureMe);
+    });
+    function->Invoke();
 }

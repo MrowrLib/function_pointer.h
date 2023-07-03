@@ -1,15 +1,34 @@
 #pragma once
 
 #include <memory>
+#include <utility>
 
 #include "FunctionPointer.h"
+#include "FunctionalFunctionPointer.h"
 #include "IFunctionPointerValueArrayDeleter.h"
 #include "MemberFunctionPointer.h"
 #include "StaticFunctionPointer.h"
+#include "function_traits.h"
 
 namespace FunctionPointers {
 
-    struct function_pointer {
+    class function_pointer {
+        template <typename F, typename ReturnType, typename ArgsTuple, std::size_t... I>
+        static IFunctionPointer* make_new_function_impl(F&& f, std::index_sequence<I...>) {
+            return new FunctionalFunctionPointer<ReturnType, std::tuple_element_t<I, ArgsTuple>...>(
+                std::forward<F>(f)
+            );
+        }
+
+        template <typename F, typename ReturnType, typename ArgsTuple, std::size_t... I>
+        static FunctionPointer make_unique_function_impl(F&& f, std::index_sequence<I...>) {
+            return std::make_unique<
+                FunctionalFunctionPointer<ReturnType, std::tuple_element_t<I, ArgsTuple>...>>(
+                std::forward<F>(f)
+            );
+        }
+
+    public:
         template <typename ReturnType, typename... Args>
         static IFunctionPointer* make_new(ReturnType (*func)(Args...)) {
             return new StaticFunctionPointer<ReturnType, Args...>(func);
@@ -20,6 +39,16 @@ namespace FunctionPointers {
             return new MemberFunctionPointer<T, ReturnType, Args...>(object, func);
         }
 
+        template <typename F>
+        static IFunctionPointer* make_new(F&& f) {
+            using Traits     = function_traits<F>;
+            using ReturnType = typename Traits::return_type;
+            using ArgsTuple  = typename Traits::args_tuple;
+            return make_new_function_impl<F, ReturnType, ArgsTuple>(
+                std::forward<F>(f), std::make_index_sequence<std::tuple_size_v<ArgsTuple>>{}
+            );
+        }
+
         template <typename ReturnType, typename... Args>
         static FunctionPointer make_unique(ReturnType (*func)(Args...)) {
             return std::make_unique<StaticFunctionPointer<ReturnType, Args...>>(func);
@@ -28,6 +57,16 @@ namespace FunctionPointers {
         template <typename T, typename ReturnType, typename... Args>
         static FunctionPointer make_unique(T* object, ReturnType (T::*func)(Args...)) {
             return std::make_unique<MemberFunctionPointer<T, ReturnType, Args...>>(object, func);
+        }
+
+        template <typename F>
+        static FunctionPointer make_unique(F&& f) {
+            using Traits     = function_traits<F>;
+            using ReturnType = typename Traits::return_type;
+            using ArgsTuple  = typename Traits::args_tuple;
+            return make_unique_function_impl<F, ReturnType, ArgsTuple>(
+                std::forward<F>(f), std::make_index_sequence<std::tuple_size_v<ArgsTuple>>{}
+            );
         }
 
         template <typename... Args>

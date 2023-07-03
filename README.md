@@ -17,9 +17,13 @@ void Example() {
     Example example;
     IFunctionPointer* memberFunctionPointer = function_pointer(&example, &Example::CallMe);
 
+    // Or a lambda (with or without captures)
+    IFunctionPointer* lambdaFunctionPointer = function_pointer([]() { /* ... */ });
+
     // Call the function pointers
     function_pointer::invoke(functionPointer, 123);
     function_pointer::invoke(memberFunctionPointer, 123);
+    function_pointer::invoke(lambdaFunctionPointer, 123);
 }
 ```
 
@@ -99,6 +103,8 @@ So I made this.
 
 ## How?
 
+### Static Function Pointers
+
 ```cpp
 #include <function_pointer.h>
 
@@ -113,6 +119,9 @@ std::unique_ptr<IFunctionPointer> functionPointer =
   function_pointer::make_unique(CallMe);
 
 // If you want a raw pointer:
+IFunctionPointer* functionPointer = new_function_pointer(CallMe);
+
+// This is shorthand for:
 IFunctionPointer* functionPointer = function_pointer::make_new(CallMe);
 
 // And you can invoke the function:
@@ -121,6 +130,8 @@ function_pointer::invoke(functionPointer, 123, <additional args here>);
 // If useful, you can invoke static function pointers directly too:
 function_pointer::invoke(CallMe, 123, <additional args here>);
 ```
+
+### Member Function Pointers
 
 ```cpp
 #include <function_pointer.h>
@@ -135,18 +146,47 @@ Example example;
 FunctionPointer memberFunctionPointer = function_pointer(&example, &Example::CallMe);
 
 // This is shorthand for:
-std::unique_ptr<IFunctionPointer> memberFunctionPointer =
-  function_pointer::make_unique(&example, &Example::CallMe);
+std::unique_ptr<IFunctionPointer> memberFunctionPointer = function_pointer::make_unique(&example, &Example::CallMe);
 
 // If you want a raw pointer:
-IFunctionPointer* memberFunctionPointer =
-  function_pointer::make_new(&example, &Example::CallMe);
+IFunctionPointer* memberFunctionPointer = new_function_pointer(&example, &Example::CallMe);
+
+// This is shorthand for:
+IFunctionPointer* memberFunctionPointer = function_pointer::make_new(&example, &Example::CallMe);
 
 // And you can invoke the function:
 function_pointer::invoke(memberFunctionPointer, 123, <additional args here>);
 
 // If useful, you can invoke static function pointers directly too:
 function_pointer::invoke(&example, &Example::CallMe, 123, <additional args here>);
+```
+
+### Lambdas
+
+```cpp
+#include <function_pointer.h>
+
+// Figured you might as well be able to store lambdas too.
+
+// You can store a lambda like this:
+FunctionPointer lambdaFunctionPointer = function_pointer([]() { /* ... */ });
+
+// This is shorthand for:
+std::unique_ptr<IFunctionPointer> lambdaFunctionPointer =
+  function_pointer::make_unique([]() { /* ... */ });
+
+// It is stored in a std::function, so you can use captures too.
+int someValue = 123;
+FunctionPointer lambdaFunctionPointer = function_pointer([someValue]() { /* ... */ });
+
+// If you want a raw pointer:
+IFunctionPointer* lambdaFunctionPointer = new_function_pointer([]() { /* ... */ });
+
+// This is shorthand for:
+IFunctionPointer* lambdaFunctionPointer = function_pointer::make_new([]() { /* ... */ });
+
+// And you can invoke the function:
+function_pointer::invoke(lambdaFunctionPointer, 123, <additional args here>);
 ```
 
 ## License

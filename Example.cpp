@@ -121,5 +121,10 @@ int main() {
     function      = function_pointer([captureMe]() {
         _Log_("Called a lambda! (unique) with capture: {}", captureMe);
     });
-    function->Invoke();
+    function_pointer::invoke(function);
+
+    function = function_pointer([captureMe](int arg) {
+        _Log_("Called a lambda! (unique) with arg: {} and captured: {}", arg, captureMe);
+    });
+    function_pointer::invoke(function, 69);
 }

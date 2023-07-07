@@ -5,12 +5,12 @@
 #include <vector>
 
 #include "FunctionPointerValue.h"
-#include "IFunctionPointerCore.h"
+#include "IFunctionPointer.h"
 
 namespace FunctionPointers {
 
     template <typename ReturnType, typename... Args>
-    class StaticFunctionPointer : public IFunctionPointerCore {
+    class StaticFunctionPointer : public IFunctionPointer {
         ReturnType (*_func)(Args...);
 
         template <std::size_t... I>

@@ -2,9 +2,10 @@
 
 #include <memory>
 
-#include "IFunctionPointerCore.h"
+#include "IFunctionPointer.h"
+
 
 namespace FunctionPointers {
 
-    using FunctionPointer = std::unique_ptr<IFunctionPointerCore>;
+    using FunctionPointer = std::unique_ptr<IFunctionPointer>;
 }

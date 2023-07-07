@@ -4,8 +4,8 @@
 
 namespace FunctionPointers {
 
-    struct IFunctionPointerCore {
-        virtual ~IFunctionPointerCore() {}
+    struct IFunctionPointer {
+        virtual ~IFunctionPointer() {}
         virtual IFunctionPointerValue* InvokeWithArgsArray(IFunctionPointerValue** args) = 0;
         virtual IFunctionPointerValue* Invoke() { return InvokeWithArgsArray(nullptr); }
     };

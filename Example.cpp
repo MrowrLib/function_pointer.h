@@ -43,6 +43,7 @@ void CallThisWithAFunction(FunctionPointer<void(int)> function) {
 int main() {
     CallThisWithAFunction(FunctionPointer<void(int)>(CallMe_Static_VoidReturn_IntArg));
     CallThisWithAFunction(function_pointer(CallMe_Static_VoidReturn_IntArg));
+    CallThisWithAFunction(CallMe_Static_VoidReturn_IntArg);
 
     // These work great!
 

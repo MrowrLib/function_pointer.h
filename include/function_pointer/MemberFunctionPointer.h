@@ -7,11 +7,8 @@
 
 namespace function_pointers::FunctionPointers {
 
-    template <typename Func>
-    class MemberFunctionPointer;
-
     template <typename T, typename ReturnType, typename... Args>
-    class MemberFunctionPointer<ReturnType(T, Args...)> : public IFunctionPointer {
+    class MemberFunctionPointer : public IFunctionPointer {
         ReturnType (T::*_func)(Args...);
         T* _instance;
 

@@ -33,6 +33,11 @@ void Example() {
     functionPointer.invoke(123);
     memberFunctionPointer.invoke(123);
     lambdaFunctionPointer.invoke(123);
+
+    // Implicit convestions to FunctionPointer:
+    PassMeAFunction(CallMe);
+    PassMeAFunction(&example, &Example::CallMe);
+    PassMeAFunction([]() { /* ... */ });
 }
 ```
 

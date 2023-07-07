@@ -40,10 +40,29 @@ void CallThisWithAFunction(FunctionPointer<void(int)> function) {
     _Log_("...");
 }
 
+struct Blah {
+    void Foo(int x) { _Log_("Called Foo with arg: {}", x); }
+};
+
 int main() {
     CallThisWithAFunction(FunctionPointer<void(int)>(CallMe_Static_VoidReturn_IntArg));
     CallThisWithAFunction(function_pointer(CallMe_Static_VoidReturn_IntArg));
     CallThisWithAFunction(CallMe_Static_VoidReturn_IntArg);
+
+    Blah blah;
+    CallThisWithAFunction({&blah, &Blah::Foo});
+
+    CallThisWithAFunction(std::function<void(int)>([](int x) {
+        _Log_("Called lambda with arg: {}", x);
+    }));
+
+    CallThisWithAFunction(function_pointer([](int x) { _Log_("Called lambda with arg: {}", x); }));
+
+    // IFunctionPointer* ptr = Ifunction_pointer(CallMe_Static_VoidReturn_IntArg);
+    // function_pointer::invoke(ptr, 123456);
+
+    // auto uPtr = unique_Ifunction_pointer(CallMe_Static_IntReturn_NoArgs);
+    // _Log_("Result: {}", function_pointer::invoke(uPtr.get())->get<int>());
 
     // These work great!
 

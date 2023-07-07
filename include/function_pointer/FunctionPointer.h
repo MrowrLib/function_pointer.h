@@ -33,7 +33,7 @@ namespace function_pointers {
         template <typename T>
         FunctionPointer(T* instance, ReturnType (T::*func)(Args...)) {
             _functionPointer =
-                std::make_unique<FunctionPointers::MemberFunctionPointer<T, ReturnType(Args...)>>(
+                std::make_unique<FunctionPointers::MemberFunctionPointer<T, ReturnType, Args...>>(
                     instance, func
                 );
         }

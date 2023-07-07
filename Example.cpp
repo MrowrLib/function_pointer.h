@@ -26,16 +26,20 @@ public:
     }
 };
 
-using namespace FunctionPointers;
-
 void CallThisWithAFunction(FunctionPointer<void(int)>* function) {
     _Log_("Called CallThisWithAFunction() with function");
     function->invoke(123);
+    _Log_("And we can work with it after type erasure too");
+    IFunctionPointer* functionPtr = function->inner_function_pointer();
+    function_pointer::invoke(functionPtr, 456);
+    _Log_("The FunctionPointer is itself a IFunctionPointer too tho");
+    IFunctionPointer* theFunctionPtr = function;
+    function_pointer::invoke(theFunctionPtr, 789);
+    _Log_("???");
 }
 
 int main() {
-    CallThisWithAFunction(new_function_pointer([](int x) { _Log_("Called lambda with arg: {}", x); }
-    ));
+    CallThisWithAFunction(new FunctionPointer<void(int)>(CallMe_Static_VoidReturn_IntArg));
 
     _Log_("----------------------");
 

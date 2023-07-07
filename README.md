@@ -9,6 +9,10 @@ class Example {
     void CallMe(int input) { /* ... */ }    
 }
 
+void PassMeAFunction(FunctionPointer<void(int)> fn) {
+    fn.invoke(123);
+}
+
 void Example() {
     // Store a static function pointer to call later
     auto functionPointer = function_pointer(CallMe);
@@ -78,7 +82,7 @@ target_link_libraries(Example PRIVATE function_pointer::function_pointer)
         {
             "kind": "git",
             "repository": "https://github.com/MrowrLib/Packages.git",
-            "baseline": "658ec5cff64ffdb73c36c0964d7180c9a941df5b",
+            "baseline": "bd7f0b5f8ffdefffb9d5849ea54ae29e28dd3f65",
             "packages": ["mrowr-function-pointer"]
         }
     ]

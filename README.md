@@ -11,19 +11,19 @@ class Example {
 
 void Example() {
     // Store a static function pointer to call later
-    IFunctionPointer* functionPointer = function_pointer(CallMe);
+    auto functionPointer = function_pointer(CallMe);
 
     // Store a member function pointer to call later
     Example example;
-    IFunctionPointer* memberFunctionPointer = function_pointer(&example, &Example::CallMe);
+    auto memberFunctionPointer = function_pointer(&example, &Example::CallMe);
 
     // Or a lambda (with or without captures)
-    IFunctionPointer* lambdaFunctionPointer = function_pointer([]() { /* ... */ });
+    auto lambdaFunctionPointer = function_pointer([]() { /* ... */ });
 
     // Call the function pointers
-    function_pointer::invoke(functionPointer, 123);
-    function_pointer::invoke(memberFunctionPointer, 123);
-    function_pointer::invoke(lambdaFunctionPointer, 123);
+    functionPointer.invoke(123);
+    memberFunctionPointer.invoke(123);
+    lambdaFunctionPointer.invoke(123);
 }
 ```
 
@@ -78,7 +78,7 @@ target_link_libraries(Example PRIVATE function_pointer::function_pointer)
         {
             "kind": "git",
             "repository": "https://github.com/MrowrLib/Packages.git",
-            "baseline": "f51588c5b7e698b64644e7596ea34e9c4d8af4bc",
+            "baseline": "54f35eb975e3b90d55af22d133e21d95de4398d6",
             "packages": ["mrowr-function-pointer"]
         }
     ]
@@ -103,91 +103,91 @@ So I made this.
 
 ## How?
 
-### Static Function Pointers
-
 ```cpp
 #include <function_pointer.h>
 
-// Example of a static function to call
 void CallMe(int input) { /* ... */ }
 
-// You can store a pointer to a static function like this:
-FunctionPointer functionPointer = function_pointer(CallMe);
-
-// This is shorthand for:
-std::unique_ptr<IFunctionPointer> functionPointer =
-  function_pointer::make_unique(CallMe);
-
-// If you want a raw pointer:
-IFunctionPointer* functionPointer = new_function_pointer(CallMe);
-
-// This is shorthand for:
-IFunctionPointer* functionPointer = function_pointer::make_new(CallMe);
-
-// And you can invoke the function:
-function_pointer::invoke(functionPointer, 123, <additional args here>);
-
-// If useful, you can invoke static function pointers directly too:
-function_pointer::invoke(CallMe, 123, <additional args here>);
-```
-
-### Member Function Pointers
-
-```cpp
-#include <function_pointer.h>
-
-// Example of a class with a member function to call
 class Example {
     void CallMe(int input) { /* ... */ }    
+};
+
+void Example() {
+    // Store a static function pointer to call later
+    auto functionPointer = function_pointer(CallMe);
+
+    // Store a member function pointer to call later
+    Example example;
+    auto memberFunctionPointer = function_pointer(&example, &Example::CallMe);
+
+    // Or a lambda (with or without captures)
+    auto lambdaFunctionPointer = function_pointer([]() { /* ... */ });
+
+    // Call the function pointers
+    functionPointer.invoke(123);
+    memberFunctionPointer.invoke(123);
+    lambdaFunctionPointer.invoke(123);
 }
-
-// You can store a pointer to a member function like this:
-Example example;
-FunctionPointer memberFunctionPointer = function_pointer(&example, &Example::CallMe);
-
-// This is shorthand for:
-std::unique_ptr<IFunctionPointer> memberFunctionPointer = function_pointer::make_unique(&example, &Example::CallMe);
-
-// If you want a raw pointer:
-IFunctionPointer* memberFunctionPointer = new_function_pointer(&example, &Example::CallMe);
-
-// This is shorthand for:
-IFunctionPointer* memberFunctionPointer = function_pointer::make_new(&example, &Example::CallMe);
-
-// And you can invoke the function:
-function_pointer::invoke(memberFunctionPointer, 123, <additional args here>);
-
-// If useful, you can invoke static function pointers directly too:
-function_pointer::invoke(&example, &Example::CallMe, 123, <additional args here>);
 ```
 
-### Lambdas
+### `FunctionPointer<ReturnType, Args...>`
+
+If you want to specify required return type and arguments for a function pointer, you can use the `FunctionPointer` template.
 
 ```cpp
-#include <function_pointer.h>
+// Using the `function_pointer` helper function
+// which returns std::unique_ptr<FunctionPointer<ReturnType, Args...>>
+auto functionPointer = function_pointer(CallMe); // Static function pointer
+auto functionPointer = function_pointer<this, &Example::CallMe); // Member function pointer
+auto functionPointer = function_pointer([]() { /* ... */ }); // Lambda or std::function
 
-// Figured you might as well be able to store lambdas too.
+// Or you can construct it yourself and have a concrete type
+auto functionPointer = FunctionPointer(CallMe); // Static function pointer
+auto functionPointer = FunctionPointer<this, &Example::CallMe); // Member function pointer
+auto functionPointer = FunctionPointer(std::function([]() { /* ... */ })); // std::function
 
-// You can store a lambda like this:
-FunctionPointer lambdaFunctionPointer = function_pointer([]() { /* ... */ });
+// Note: Using the function_pointer helper, you can pass a lambda directly.
+//       But if you construct a FunctionPointer yourself, you'll need to explicitly
+//       pass it as a std::function
 
-// This is shorthand for:
-std::unique_ptr<IFunctionPointer> lambdaFunctionPointer =
-  function_pointer::make_unique([]() { /* ... */ });
-
-// It is stored in a std::function, so you can use captures too.
-int someValue = 123;
-FunctionPointer lambdaFunctionPointer = function_pointer([someValue]() { /* ... */ });
-
-// If you want a raw pointer:
-IFunctionPointer* lambdaFunctionPointer = new_function_pointer([]() { /* ... */ });
-
-// This is shorthand for:
-IFunctionPointer* lambdaFunctionPointer = function_pointer::make_new([]() { /* ... */ });
-
-// And you can invoke the function:
-function_pointer::invoke(lambdaFunctionPointer, 123, <additional args here>);
+// There is also a helper which returns a raw pointer
+auto* functionPointer = new_function_pointer(CallMe); // Static function pointer
+auto* functionPointer = new_function_pointer<this, &Example::CallMe); // Member function pointer
+auto* functionPointer = new_function_pointer([]() { /* ... */ }); // Lambda or std::function
 ```
+
+If you declare a function which accepts a `FunctionPointer` as an argument, you must specify the return type and arguments.
+
+```cpp
+void MyFunction(FunctionPointer<void, int> functionPointer) {
+    functionPointer.invoke(123);
+}
+```
+
+### `IFunctionPointer`
+
+If you want to store a function pointer without specifying the return type or arguments, you can use the `IFunctionPointer` interface.
+
+> This template uses type erasure, allowing you to easily store instances without knowing the return type or arguments.
+
+```cpp
+// Using the `function_pointer` helper function
+// which returns std::unique_ptr<IFunctionPointer>
+auto functionPointer = Ifunction_pointer(CallMe); // Static function pointer
+auto functionPointer = Ifunction_pointer<this, &Example::CallMe); // Member function pointer
+auto functionPointer = Ifunction_pointer([]() { /* ... */ }); // Lambda or std::function
+
+// There is also a helper which returns a raw pointer
+IFunctionPointer* functionPointer = new_ifunction_pointer(CallMe); // Static function pointer
+IFunctionPointer* functionPointer = new_ifunction_pointer<this, &Example::CallMe); // Member function pointer
+IFunctionPointer* functionPointer = new_ifunction_pointer([]() { /* ... */ }); // Lambda or std::function
+```
+
+`IFunctionPointer*` is the reason why this library exists.
+
+You can store a `IFunctionPointer*` and invoke it later, without knowing the return type or arguments.
+
+You can easily store various `IFunctionPointer*` of different types in the same container.
 
 ## License
 

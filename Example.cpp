@@ -29,7 +29,7 @@ public:
 int main() {
     _Log_("STATIC FUNCTION EXAMPLES");
 
-    IFunctionPointer* functionPtr = function_pointer::make_new(CallMe_Static_VoidReturn_NoArgs);
+    IFunctionPointerCore* functionPtr = function_pointer::make_new(CallMe_Static_VoidReturn_NoArgs);
     functionPtr->Invoke();
     delete functionPtr;
 

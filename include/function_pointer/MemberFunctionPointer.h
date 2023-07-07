@@ -3,12 +3,12 @@
 #include <utility>
 
 #include "FunctionPointerValue.h"
-#include "IFunctionPointer.h"
+#include "IFunctionPointerCore.h"
 
 namespace FunctionPointers {
 
     template <typename T, typename ReturnType, typename... Args>
-    class MemberFunctionPointer : public IFunctionPointer {
+    class MemberFunctionPointer : public IFunctionPointerCore {
         ReturnType (T::*_func)(Args...);
         T* _instance;
 

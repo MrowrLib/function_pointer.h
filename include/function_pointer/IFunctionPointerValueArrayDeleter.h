@@ -4,7 +4,7 @@
 
 #include "IFunctionPointerValue.h"
 
-namespace FunctionPointers {
+namespace function_pointers::FunctionPointers {
 
     struct IFunctionPointerValueArrayDeleter {
         void operator()(IFunctionPointerValue** array) const {

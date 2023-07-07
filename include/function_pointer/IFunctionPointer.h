@@ -2,11 +2,12 @@
 
 #include "IFunctionPointerValue.h"
 
-namespace FunctionPointers {
+namespace function_pointers {
 
     struct IFunctionPointer {
         virtual ~IFunctionPointer() {}
-        virtual IFunctionPointerValue* InvokeWithArgsArray(IFunctionPointerValue** args) = 0;
-        virtual IFunctionPointerValue* Invoke() { return InvokeWithArgsArray(nullptr); }
+        virtual FunctionPointers::IFunctionPointerValue* invokeWithArgsArray(
+            FunctionPointers::IFunctionPointerValue** args
+        ) = 0;
     };
 }

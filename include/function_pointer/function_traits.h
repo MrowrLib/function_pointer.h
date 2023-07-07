@@ -2,7 +2,7 @@
 
 #include <tuple>
 
-namespace FunctionPointers {
+namespace function_pointers::FunctionPointers {
 
     template <typename T>
     struct function_traits;

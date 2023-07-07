@@ -8,14 +8,14 @@
 #include "FunctionPointerValue.h"
 #include "IFunctionPointer.h"
 
-namespace FunctionPointers {
+namespace function_pointers::FunctionPointers {
 
     template <typename ReturnType, typename... Args>
     class FunctionalFunctionPointer : public IFunctionPointer {
         std::function<ReturnType(Args...)> _func;
 
         template <std::size_t... I>
-        IFunctionPointerValue* InvokeAndReturnImpl(
+        IFunctionPointerValue* invokeAndReturnImpl(
             std::index_sequence<I...>, IFunctionPointerValue** args
         ) {
             return new FunctionPointerValue<ReturnType>(
@@ -26,7 +26,7 @@ namespace FunctionPointers {
         }
 
         template <std::size_t... I>
-        void InvokeImpl(std::index_sequence<I...>, IFunctionPointerValue** args) {
+        void invokeImpl(std::index_sequence<I...>, IFunctionPointerValue** args) {
             _func(static_cast<FunctionPointerValue<
                       typename std::tuple_element<I, std::tuple<Args...>>::type>*>(args[I])
                       ->GetValue()...);
@@ -35,11 +35,11 @@ namespace FunctionPointers {
     public:
         FunctionalFunctionPointer(std::function<ReturnType(Args...)> func) : _func(func) {}
 
-        IFunctionPointerValue* InvokeWithArgsArray(IFunctionPointerValue** args) override {
+        IFunctionPointerValue* invokeWithArgsArray(IFunctionPointerValue** args) override {
             if constexpr (!std::is_same<ReturnType, void>::value) {
-                return InvokeAndReturnImpl(std::index_sequence_for<Args...>{}, args);
+                return invokeAndReturnImpl(std::index_sequence_for<Args...>{}, args);
             } else {
-                InvokeImpl(std::index_sequence_for<Args...>{}, args);
+                invokeImpl(std::index_sequence_for<Args...>{}, args);
                 return nullptr;
             }
         }

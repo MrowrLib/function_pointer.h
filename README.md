@@ -141,15 +141,6 @@ auto functionPointer = function_pointer(CallMe); // Static function pointer
 auto functionPointer = function_pointer<this, &Example::CallMe); // Member function pointer
 auto functionPointer = function_pointer([]() { /* ... */ }); // Lambda or std::function
 
-// Or you can construct it yourself and have a concrete type
-auto functionPointer = FunctionPointer(CallMe); // Static function pointer
-auto functionPointer = FunctionPointer<this, &Example::CallMe); // Member function pointer
-auto functionPointer = FunctionPointer(std::function([]() { /* ... */ })); // std::function
-
-// Note: Using the function_pointer helper, you can pass a lambda directly.
-//       But if you construct a FunctionPointer yourself, you'll need to explicitly
-//       pass it as a std::function
-
 // There is also a helper which returns a raw pointer
 auto* functionPointer = new_function_pointer(CallMe); // Static function pointer
 auto* functionPointer = new_function_pointer<this, &Example::CallMe); // Member function pointer

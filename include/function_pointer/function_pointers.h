@@ -3,7 +3,7 @@
 #include <memory>
 #include <utility>
 
-#include "FunctionPointer.h"
+#include "FunctionPointerImpl.h"
 #include "FunctionalFunctionPointer.h"
 #include "IFunctionPointerValueArrayDeleter.h"
 #include "MemberFunctionPointer.h"
@@ -29,7 +29,8 @@ namespace function_pointers {
         template <typename F, typename ReturnType, typename ArgsTuple, std::size_t... I>
         static FunctionPointer<ReturnType, std::tuple_element_t<I, ArgsTuple>...>*
         make_new_function_impl(F&& f, std::index_sequence<I...>) {
-            return new FunctionPointer<ReturnType, std::tuple_element_t<I, ArgsTuple>...>(
+            return new FunctionPointers::FunctionPointerImpl<
+                ReturnType, std::tuple_element_t<I, ArgsTuple>...>(
                 std::function<ReturnType(std::tuple_element_t<I, ArgsTuple>...)>(std::forward<F>(f))
             );
         }
@@ -37,8 +38,8 @@ namespace function_pointers {
         template <typename F, typename ReturnType, typename ArgsTuple, std::size_t... I>
         static std::unique_ptr<FunctionPointer<ReturnType, std::tuple_element_t<I, ArgsTuple>...>>
         make_unique_function_impl(F&& f, std::index_sequence<I...>) {
-            return std::make_unique<
-                FunctionPointer<ReturnType, std::tuple_element_t<I, ArgsTuple>...>>(
+            return std::make_unique<FunctionPointers::FunctionPointerImpl<
+                ReturnType, std::tuple_element_t<I, ArgsTuple>...>>(
                 std::function<ReturnType(std::tuple_element_t<I, ArgsTuple>...)>(std::forward<F>(f))
             );
         }
@@ -46,21 +47,21 @@ namespace function_pointers {
     public:
         template <typename ReturnType, typename... Args>
         static FunctionPointer<ReturnType, Args...>* make_new(ReturnType (*func)(Args...)) {
-            return new FunctionPointer<ReturnType, Args...>(func);
+            return new FunctionPointers::FunctionPointerImpl<ReturnType, Args...>(func);
         }
 
         template <typename T, typename ReturnType, typename... Args>
         static FunctionPointer<ReturnType, Args...>* make_new(
             T* object, ReturnType (T::*func)(Args...)
         ) {
-            return new FunctionPointer<ReturnType, Args...>(object, func);
+            return new FunctionPointers::FunctionPointerImpl<ReturnType, Args...>(object, func);
         }
 
         template <typename ReturnType, typename... Args>
         static FunctionPointer<ReturnType, Args...>* make_new(
             std::function<ReturnType(Args...)> func
         ) {
-            return new FunctionPointer<ReturnType, Args...>(func);
+            return new FunctionPointers::FunctionPointerImpl<ReturnType, Args...>(func);
         }
 
         template <typename F>
@@ -77,21 +78,25 @@ namespace function_pointers {
         static std::unique_ptr<FunctionPointer<ReturnType, Args...>> make_unique(
             ReturnType (*func)(Args...)
         ) {
-            return std::make_unique<FunctionPointer<ReturnType, Args...>>(func);
+            return std::make_unique<FunctionPointers::FunctionPointerImpl<ReturnType, Args...>>(func
+            );
         }
 
         template <typename T, typename ReturnType, typename... Args>
         static std::unique_ptr<FunctionPointer<ReturnType, Args...>> make_unique(
             T* object, ReturnType (T::*func)(Args...)
         ) {
-            return std::make_unique<FunctionPointer<ReturnType, Args...>>(object, func);
+            return std::make_unique<FunctionPointers::FunctionPointerImpl<ReturnType, Args...>>(
+                object, func
+            );
         }
 
         template <typename ReturnType, typename... Args>
         static std::unique_ptr<FunctionPointer<ReturnType, Args...>> make_unique(
             std::function<ReturnType(Args...)> func
         ) {
-            return std::make_unique<FunctionPointer<ReturnType, Args...>>(func);
+            return std::make_unique<FunctionPointers::FunctionPointerImpl<ReturnType, Args...>>(func
+            );
         }
 
         template <typename F>

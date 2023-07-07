@@ -10,7 +10,7 @@
 namespace function_pointers::FunctionPointers {
 
     template <typename ReturnType, typename... Args>
-    class FunctionPointerImpl : public FunctionPointer<ReturnType, Args...> {
+    class FunctionPointerImpl : public FunctionPointer<ReturnType(Args...)> {
         std::unique_ptr<IFunctionPointer> _functionPointer;
 
     public:

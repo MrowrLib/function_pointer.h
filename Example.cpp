@@ -28,13 +28,14 @@ public:
 
 using namespace FunctionPointers;
 
-void CallThisWithAFunction(std::unique_ptr<FunctionPointer<void, int>> function) {
+void CallThisWithAFunction(FunctionPointer<void(int)>* function) {
     _Log_("Called CallThisWithAFunction() with function");
     function->invoke(123);
 }
 
 int main() {
-    CallThisWithAFunction(function_pointer([](int x) { _Log_("Called lambda with arg: {}", x); }));
+    CallThisWithAFunction(new_function_pointer([](int x) { _Log_("Called lambda with arg: {}", x); }
+    ));
 
     _Log_("----------------------");
 

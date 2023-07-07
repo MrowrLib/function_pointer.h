@@ -34,7 +34,7 @@ namespace FunctionPointers {
     public:
         StaticFunctionPointer(ReturnType (*func)(Args...)) : _func(func) {}
 
-        IFunctionPointerValue* Invoke(IFunctionPointerValue** args) override {
+        IFunctionPointerValue* InvokeWithArgsArray(IFunctionPointerValue** args) override {
             if constexpr (!std::is_same<ReturnType, void>::value) {
                 return InvokeAndReturnImpl(std::index_sequence_for<Args...>{}, args);
             } else {

@@ -6,7 +6,7 @@ namespace FunctionPointers {
 
     struct IFunctionPointer {
         virtual ~IFunctionPointer() {}
-        virtual IFunctionPointerValue* Invoke(IFunctionPointerValue** args) = 0;
-        virtual IFunctionPointerValue* Invoke() { return Invoke(nullptr); }
+        virtual IFunctionPointerValue* InvokeWithArgsArray(IFunctionPointerValue** args) = 0;
+        virtual IFunctionPointerValue* Invoke() { return InvokeWithArgsArray(nullptr); }
     };
 }

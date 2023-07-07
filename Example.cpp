@@ -47,10 +47,10 @@ int main() {
     function = function_pointer::make_unique(CallMe_Static_VoidReturn_IntArg);
 
     auto* argsPtr = function_pointer::make_new_args(69);
-    function->Invoke(argsPtr);
+    function->InvokeWithArgsArray(argsPtr);
 
     auto args = function_pointer::make_unique_args(420);
-    function->Invoke(args.get());
+    function->InvokeWithArgsArray(args.get());
 
     function_pointer::invoke(CallMe_Static_VoidReturn_NoArgs);
     function_pointer::invoke(CallMe_Static_VoidReturn_IntArg, 123);
@@ -60,7 +60,7 @@ int main() {
 
     function  = function_pointer::make_unique(CallMe_Static_IntReturn_MultipleArgs);
     argsPtr   = function_pointer::make_new_args(69, true, 3.14f);
-    result    = function->Invoke(argsPtr);
+    result    = function->InvokeWithArgsArray(argsPtr);
     resultInt = result->get<int>();
     _Log_("--> -> CallMe_Static_IntReturn_MultipleArgs returned: {}", resultInt);
 
@@ -97,10 +97,10 @@ int main() {
         function_pointer::make_unique(&someClass, &SomeClass::CallMe_Member_VoidReturn_IntArg);
 
     argsPtr = function_pointer::make_new_args(69);
-    function->Invoke(argsPtr);
+    function->InvokeWithArgsArray(argsPtr);
 
     args = function_pointer::make_unique_args(420);
-    function->Invoke(args.get());
+    function->InvokeWithArgsArray(args.get());
 
     function_pointer::invoke(&someClass, &SomeClass::CallMe_Member_VoidReturn_NoArgs);
     function_pointer::invoke(&someClass, &SomeClass::CallMe_Member_VoidReturn_IntArg, 123);

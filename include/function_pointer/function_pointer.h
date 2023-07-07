@@ -89,9 +89,9 @@ namespace FunctionPointers {
         static std::unique_ptr<IFunctionPointerValue> invoke(
             ReturnType (*func)(Args...), Args&&... args
         ) {
-            return std::unique_ptr<IFunctionPointerValue>(
-                make_new(func)->Invoke(make_unique_args(std::forward<Args>(args)...).get())
-            );
+            return std::unique_ptr<IFunctionPointerValue>(make_new(func)->InvokeWithArgsArray(
+                make_unique_args(std::forward<Args>(args)...).get()
+            ));
         }
 
         template <typename T, typename ReturnType, typename... Args>
@@ -99,7 +99,8 @@ namespace FunctionPointers {
             T* object, ReturnType (T::*func)(Args...), Args&&... args
         ) {
             return std::unique_ptr<IFunctionPointerValue>(
-                make_new(object, func)->Invoke(make_unique_args(std::forward<Args>(args)...).get())
+                make_new(object, func)
+                    ->InvokeWithArgsArray(make_unique_args(std::forward<Args>(args)...).get())
             );
         }
 
@@ -107,18 +108,18 @@ namespace FunctionPointers {
         static std::unique_ptr<IFunctionPointerValue> invoke(
             IFunctionPointer* functionPointer, Args&&... args
         ) {
-            return std::unique_ptr<IFunctionPointerValue>(
-                functionPointer->Invoke(make_unique_args(std::forward<Args>(args)...).get())
-            );
+            return std::unique_ptr<IFunctionPointerValue>(functionPointer->InvokeWithArgsArray(
+                make_unique_args(std::forward<Args>(args)...).get()
+            ));
         }
 
         template <typename... Args>
         static std::unique_ptr<IFunctionPointerValue> invoke(
             FunctionPointer& functionPointer, Args&&... args
         ) {
-            return std::unique_ptr<IFunctionPointerValue>(
-                functionPointer->Invoke(make_unique_args(std::forward<Args>(args)...).get())
-            );
+            return std::unique_ptr<IFunctionPointerValue>(functionPointer->InvokeWithArgsArray(
+                make_unique_args(std::forward<Args>(args)...).get()
+            ));
         }
     };
 }

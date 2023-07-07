@@ -10,7 +10,12 @@ class Example {
 }
 
 void PassMeAFunction(FunctionPointer<void(int)> fn) {
+    // Invoke function pointer
     fn.invoke(123);
+
+    // Store any kind of FunctionPointer<*> in a container (with type erasure)
+    std::vector<IFunctionPointer*> _functionPointers;
+    _functionPointers.push_back(fn);
 }
 
 void Example() {
@@ -134,13 +139,13 @@ void Example() {
 }
 ```
 
-### `FunctionPointer<ReturnType, Args...>`
+### `FunctionPointer<ReturnType(Args...)>`
 
 If you want to specify required return type and arguments for a function pointer, you can use the `FunctionPointer` template.
 
 ```cpp
 // Using the `function_pointer` helper function
-// which returns std::unique_ptr<FunctionPointer<ReturnType, Args...>>
+// which returns std::unique_ptr<FunctionPointer<ReturnType(Args...)>>
 auto functionPointer = function_pointer(CallMe); // Static function pointer
 auto functionPointer = function_pointer<this, &Example::CallMe); // Member function pointer
 auto functionPointer = function_pointer([]() { /* ... */ }); // Lambda or std::function

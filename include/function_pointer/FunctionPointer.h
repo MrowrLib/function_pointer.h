@@ -19,13 +19,13 @@ namespace function_pointers {
     public:
         FunctionPointer(ReturnType (*func)(Args...)) {
             _functionPointer =
-                std::make_unique<FunctionPointers::StaticFunctionPointer<ReturnType, Args...>>(func
+                std::make_unique<FunctionPointers::StaticFunctionPointer<ReturnType(Args...)>>(func
                 );
         }
 
         FunctionPointer(std::function<ReturnType(Args...)> func) {
             _functionPointer =
-                std::make_unique<FunctionPointers::FunctionalFunctionPointer<ReturnType, Args...>>(
+                std::make_unique<FunctionPointers::FunctionalFunctionPointer<ReturnType(Args...)>>(
                     func
                 );
         }
@@ -33,7 +33,7 @@ namespace function_pointers {
         template <typename T>
         FunctionPointer(T* instance, ReturnType (T::*func)(Args...)) {
             _functionPointer =
-                std::make_unique<FunctionPointers::MemberFunctionPointer<T, ReturnType, Args...>>(
+                std::make_unique<FunctionPointers::MemberFunctionPointer<T, ReturnType(Args...)>>(
                     instance, func
                 );
         }

@@ -10,8 +10,11 @@
 
 namespace function_pointers::FunctionPointers {
 
+    template <typename Func>
+    class FunctionalFunctionPointer;
+
     template <typename ReturnType, typename... Args>
-    class FunctionalFunctionPointer : public IFunctionPointer {
+    class FunctionalFunctionPointer<ReturnType(Args...)> : public IFunctionPointer {
         std::function<ReturnType(Args...)> _func;
 
         template <std::size_t... I>

@@ -9,8 +9,11 @@
 
 namespace function_pointers::FunctionPointers {
 
+    template <typename Func>
+    class StaticFunctionPointer;
+
     template <typename ReturnType, typename... Args>
-    class StaticFunctionPointer : public IFunctionPointer {
+    class StaticFunctionPointer<ReturnType(Args...)> : public IFunctionPointer {
         ReturnType (*_func)(Args...);
 
         template <std::size_t... I>

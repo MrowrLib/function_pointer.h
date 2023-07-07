@@ -7,6 +7,7 @@
 #define new_Ifunction_pointer(...) \
     function_pointers::function_pointer::make_new_untyped(__VA_ARGS__)
 
-// Helpers for generating a FunctionPointer<ReturnType, Args...>
-#define function_pointer(...) function_pointers::function_pointer::make_unique(__VA_ARGS__)
+// Helpers for generating a FunctionPointer<ReturnType(Args...)>
+#define function_pointer(...) function_pointers::function_pointer::make(__VA_ARGS__)
 #define new_function_pointer(...) function_pointers::function_pointer::make_new(__VA_ARGS__)
+#define unique_function_pointer(...) function_pointers::function_pointer::make_unique(__VA_ARGS__)

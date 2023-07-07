@@ -27,6 +27,14 @@ namespace function_pointers {
         }
 
         template <typename F, typename ReturnType, typename ArgsTuple, std::size_t... I>
+        static FunctionPointer<ReturnType(std::tuple_element_t<I, ArgsTuple>...)>
+        make_function_impl(F&& f, std::index_sequence<I...>) {
+            return FunctionPointer<ReturnType, std::tuple_element_t<I, ArgsTuple>...>(
+                std::function<ReturnType(std::tuple_element_t<I, ArgsTuple>...)>(std::forward<F>(f))
+            );
+        }
+
+        template <typename F, typename ReturnType, typename ArgsTuple, std::size_t... I>
         static FunctionPointer<ReturnType(std::tuple_element_t<I, ArgsTuple>...)>*
         make_new_function_impl(F&& f, std::index_sequence<I...>) {
             return new FunctionPointer<ReturnType, std::tuple_element_t<I, ArgsTuple>...>(
@@ -45,22 +53,51 @@ namespace function_pointers {
 
     public:
         template <typename ReturnType, typename... Args>
+        static FunctionPointer<ReturnType(Args...)> make(ReturnType (*func)(Args...)) {
+            return FunctionPointer<ReturnType(Args...)>(func);
+        }
+
+        template <typename T, typename ReturnType, typename... Args>
+        static FunctionPointer<ReturnType(Args...)> make(
+            T* object, ReturnType (T::*func)(Args...)
+        ) {
+            return FunctionPointer<ReturnType(Args...)>(object, func);
+        }
+
+        template <typename ReturnType, typename... Args>
+        static FunctionPointer<ReturnType(Args...)> make(std::function<ReturnType(Args...)> func) {
+            return FunctionPointer<ReturnType(Args...)>(func);
+        }
+
+        template <typename F>
+        auto static make(F&& f) {
+            using Traits     = FunctionPointers::function_traits<F>;
+            using ReturnType = typename Traits::return_type;
+            using ArgsTuple  = typename Traits::args_tuple;
+            return make_function_impl<F, ReturnType, ArgsTuple>(
+                std::forward<F>(f), std::make_index_sequence<std::tuple_size_v<ArgsTuple>>{}
+            );
+        }
+
+        ///
+
+        template <typename ReturnType, typename... Args>
         static FunctionPointer<ReturnType(Args...)>* make_new(ReturnType (*func)(Args...)) {
-            return new FunctionPointer<ReturnType, Args...>(func);
+            return new FunctionPointer<ReturnType(Args...)>(func);
         }
 
         template <typename T, typename ReturnType, typename... Args>
         static FunctionPointer<ReturnType(Args...)>* make_new(
             T* object, ReturnType (T::*func)(Args...)
         ) {
-            return new FunctionPointer<ReturnType, Args...>(object, func);
+            return new FunctionPointer<ReturnType(Args...)>(object, func);
         }
 
         template <typename ReturnType, typename... Args>
         static FunctionPointer<ReturnType(Args...)>* make_new(
             std::function<ReturnType(Args...)> func
         ) {
-            return new FunctionPointer<ReturnType, Args...>(func);
+            return new FunctionPointer<ReturnType(Args...)>(func);
         }
 
         template <typename F>
@@ -77,21 +114,21 @@ namespace function_pointers {
         static std::unique_ptr<FunctionPointer<ReturnType(Args...)>> make_unique(
             ReturnType (*func)(Args...)
         ) {
-            return std::make_unique<FunctionPointer<ReturnType, Args...>>(func);
+            return std::make_unique<FunctionPointer<ReturnType(Args...)>>(func);
         }
 
         template <typename T, typename ReturnType, typename... Args>
         static std::unique_ptr<FunctionPointer<ReturnType(Args...)>> make_unique(
             T* object, ReturnType (T::*func)(Args...)
         ) {
-            return std::make_unique<FunctionPointer<ReturnType, Args...>>(object, func);
+            return std::make_unique<FunctionPointer<ReturnType(Args...)>>(object, func);
         }
 
         template <typename ReturnType, typename... Args>
         static std::unique_ptr<FunctionPointer<ReturnType(Args...)>> make_unique(
             std::function<ReturnType(Args...)> func
         ) {
-            return std::make_unique<FunctionPointer<ReturnType, Args...>>(func);
+            return std::make_unique<FunctionPointer<ReturnType(Args...)>>(func);
         }
 
         template <typename F>
@@ -106,12 +143,12 @@ namespace function_pointers {
 
         template <typename ReturnType, typename... Args>
         static IFunctionPointer* make_new_untyped(ReturnType (*func)(Args...)) {
-            return new FunctionPointers::StaticFunctionPointer<ReturnType, Args...>(func);
+            return new FunctionPointers::StaticFunctionPointer<ReturnType(Args...)>(func);
         }
 
         template <typename T, typename ReturnType, typename... Args>
         static IFunctionPointer* make_new_untyped(T* object, ReturnType (T::*func)(Args...)) {
-            return new FunctionPointers::MemberFunctionPointer<T, ReturnType, Args...>(
+            return new FunctionPointers::MemberFunctionPointer<T, ReturnType(Args...)>(
                 object, func
             );
         }
@@ -128,7 +165,7 @@ namespace function_pointers {
 
         template <typename ReturnType, typename... Args>
         static std::unique_ptr<IFunctionPointer> make_unique_untyped(ReturnType (*func)(Args...)) {
-            return std::make_unique<FunctionPointers::StaticFunctionPointer<ReturnType, Args...>>(
+            return std::make_unique<FunctionPointers::StaticFunctionPointer<ReturnType(Args...)>>(
                 func
             );
         }
@@ -138,7 +175,7 @@ namespace function_pointers {
             T* object, ReturnType (T::*func)(Args...)
         ) {
             return std::make_unique<
-                FunctionPointers::MemberFunctionPointer<T, ReturnType, Args...>>(object, func);
+                FunctionPointers::MemberFunctionPointer<T, ReturnType(Args...)>>(object, func);
         }
 
         template <typename F>

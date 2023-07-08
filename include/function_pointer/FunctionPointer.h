@@ -13,8 +13,8 @@ namespace FunctionPointers {
 
     template <typename ReturnType, typename... Args>
     struct FunctionPointer<ReturnType(Args...)> : public IFunctionPointer<ReturnType(Args...)> {
-        bool                                  _destroyFunctionPointerBaseOnDestruction = true;
-        std::unique_ptr<IFunctionPointerBase> _functionPointer;
+        bool _destroyFunctionPointerBaseOnDestruction = true;
+        std::unique_ptr<IFunctionPointer<ReturnType(Args...)>> _functionPointer;
 
     public:
         ~FunctionPointer() {
@@ -49,7 +49,7 @@ namespace FunctionPointers {
             return _functionPointer->invokeWithArgsArray(args);
         }
 
-        virtual IFunctionPointerBase* inner_function_pointer() const {
+        virtual IFunctionPointer<ReturnType(Args...)>* inner_function_pointer() const {
             return _functionPointer.get();
         }
 

@@ -37,7 +37,17 @@ void CallThisWithAFunction(FunctionPointer<void(int)> function) {
     _Log_("The FunctionPointer is itself a IFunctionPointerBase too tho");
     IFunctionPointerBase* theFunctionPtr = &function;
     function_pointer::invoke(theFunctionPtr, 789);
-    _Log_("...");
+    _Log_("=-=-=");
+}
+
+void Ptr_CallThisWithAFunction(IFunctionPointer<void(int)>* function) {
+    _Log_("Called CallThisWithAFunction() with function");
+    function->invoke(123);
+
+    _Log_("And we can work with it after type erasure too");
+    IFunctionPointerBase* functionPtr = function;
+    function_pointer::invoke(functionPtr, 456);
+    _Log_("~~~");
 }
 
 struct Blah {
@@ -48,6 +58,9 @@ int main() {
     CallThisWithAFunction(FunctionPointer<void(int)>(CallMe_Static_VoidReturn_IntArg));
     CallThisWithAFunction(function_pointer(CallMe_Static_VoidReturn_IntArg));
     CallThisWithAFunction(CallMe_Static_VoidReturn_IntArg);
+
+    Ptr_CallThisWithAFunction(new FunctionPointer<void(int)>(CallMe_Static_VoidReturn_IntArg));
+    Ptr_CallThisWithAFunction(new_function_pointer(CallMe_Static_VoidReturn_IntArg));
 
     Blah blah;
     CallThisWithAFunction({&blah, &Blah::Foo});
@@ -67,6 +80,12 @@ int main() {
     // Get and invoke it as a TypedFunctionPointer
     auto* typedStaticPtr = dynamic_cast<IFunctionPointer<void(int)>*>(staticFunctionPtr);
     typedStaticPtr->invoke(420);
+
+    FunctionPointer<int()> callStatic(CallMe_Static_IntReturn_NoArgs);
+    _Log_("Got int: {}", callStatic.invoke());
+
+    auto autoCallStatic = function_pointer(CallMe_Static_IntReturn_NoArgs);
+    _Log_("Got int again: {}", autoCallStatic.invoke());
 
     // IFunctionPointerBase* ptr = Ifunction_pointer(CallMe_Static_VoidReturn_IntArg);
     // function_pointer::invoke(ptr, 123456);

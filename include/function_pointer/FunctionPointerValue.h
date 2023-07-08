@@ -2,7 +2,7 @@
 
 #include "IFunctionPointerValue.h"
 
-namespace function_pointers::FunctionPointers {
+namespace FunctionPointers {
 
     template <typename T>
     class FunctionPointerValue : public IFunctionPointerValue {

@@ -6,15 +6,14 @@
 #include "MemberFunctionPointer.h"
 #include "StaticFunctionPointer.h"
 
-namespace function_pointers {
+namespace FunctionPointers {
 
     template <typename Func>
     struct FunctionPointer;
 
     template <typename ReturnType, typename... Args>
-    struct FunctionPointer<ReturnType(Args...)>
-        : public ITypedFunctionPointer<ReturnType(Args...)> {
-        std::unique_ptr<IFunctionPointer> _functionPointer;
+    struct FunctionPointer<ReturnType(Args...)> : public IFunctionPointer<ReturnType(Args...)> {
+        std::unique_ptr<IFunctionPointerBase> _functionPointer;
 
     public:
         FunctionPointer(ReturnType (*func)(Args...)) {
@@ -44,6 +43,6 @@ namespace function_pointers {
             return _functionPointer->invokeWithArgsArray(args);
         }
 
-        virtual IFunctionPointer* inner_function_pointer() { return _functionPointer.get(); }
+        virtual IFunctionPointerBase* inner_function_pointer() { return _functionPointer.get(); }
     };
 }

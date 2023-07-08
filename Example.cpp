@@ -31,11 +31,11 @@ void CallThisWithAFunction(FunctionPointer<void(int)> function) {
     function.invoke(123);
 
     _Log_("And we can work with it after type erasure too");
-    IFunctionPointer* functionPtr = function.inner_function_pointer();
+    IFunctionPointerBase* functionPtr = function.inner_function_pointer();
     function_pointer::invoke(functionPtr, 456);
 
-    _Log_("The FunctionPointer is itself a IFunctionPointer too tho");
-    IFunctionPointer* theFunctionPtr = &function;
+    _Log_("The FunctionPointer is itself a IFunctionPointerBase too tho");
+    IFunctionPointerBase* theFunctionPtr = &function;
     function_pointer::invoke(theFunctionPtr, 789);
     _Log_("...");
 }
@@ -58,17 +58,17 @@ int main() {
 
     CallThisWithAFunction(function_pointer([](int x) { _Log_("Called lambda with arg: {}", x); }));
 
-    IFunctionPointer* staticFunctionPtr =
+    IFunctionPointerBase* staticFunctionPtr =
         function_pointer::make_new_untyped(CallMe_Static_VoidReturn_IntArg);
 
     // Invoke the static function pointer
     function_pointer::invoke(staticFunctionPtr, 123321);
 
     // Get and invoke it as a TypedFunctionPointer
-    auto* typedStaticPtr = dynamic_cast<ITypedFunctionPointer<void(int)>*>(staticFunctionPtr);
+    auto* typedStaticPtr = dynamic_cast<IFunctionPointer<void(int)>*>(staticFunctionPtr);
     typedStaticPtr->invoke(420);
 
-    // IFunctionPointer* ptr = Ifunction_pointer(CallMe_Static_VoidReturn_IntArg);
+    // IFunctionPointerBase* ptr = Ifunction_pointer(CallMe_Static_VoidReturn_IntArg);
     // function_pointer::invoke(ptr, 123456);
 
     // auto uPtr = unique_Ifunction_pointer(CallMe_Static_IntReturn_NoArgs);
@@ -92,7 +92,7 @@ int main() {
 
     // _Log_("STATIC FUNCTION EXAMPLES");
 
-    // IFunctionPointer* functionPtr =
+    // IFunctionPointerBase* functionPtr =
     //     function_pointer::make_new_untyped(CallMe_Static_VoidReturn_NoArgs);
     // functionPtr->invoke();
     // delete functionPtr;

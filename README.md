@@ -14,7 +14,7 @@ void PassMeAFunction(FunctionPointer<void(int)> fn) {
     fn.invoke(123);
 
     // Store any kind of FunctionPointer<*> in a container (with type erasure)
-    std::vector<IFunctionPointer*> _functionPointers;
+    std::vector<IFunctionPointerBase*> _functionPointers;
     _functionPointers.push_back(fn);
 }
 
@@ -169,30 +169,30 @@ void MyFunction(FunctionPointer<void, int> functionPointer) {
 }
 ```
 
-### `IFunctionPointer`
+### `IFunctionPointerBase`
 
-If you want to store a function pointer without specifying the return type or arguments, you can use the `IFunctionPointer` interface.
+If you want to store a function pointer without specifying the return type or arguments, you can use the `IFunctionPointerBase` interface.
 
 > This template uses type erasure, allowing you to easily store instances without knowing the return type or arguments.
 
 ```cpp
 // Using the `function_pointer` helper function
-// which returns std::unique_ptr<IFunctionPointer>
+// which returns std::unique_ptr<IFunctionPointerBase>
 auto functionPointer = Ifunction_pointer(CallMe); // Static function pointer
 auto functionPointer = Ifunction_pointer<this, &Example::CallMe); // Member function pointer
 auto functionPointer = Ifunction_pointer([]() { /* ... */ }); // Lambda or std::function
 
 // There is also a helper which returns a raw pointer
-IFunctionPointer* functionPointer = new_ifunction_pointer(CallMe); // Static function pointer
-IFunctionPointer* functionPointer = new_ifunction_pointer<this, &Example::CallMe); // Member function pointer
-IFunctionPointer* functionPointer = new_ifunction_pointer([]() { /* ... */ }); // Lambda or std::function
+IFunctionPointerBase* functionPointer = new_ifunction_pointer(CallMe); // Static function pointer
+IFunctionPointerBase* functionPointer = new_ifunction_pointer<this, &Example::CallMe); // Member function pointer
+IFunctionPointerBase* functionPointer = new_ifunction_pointer([]() { /* ... */ }); // Lambda or std::function
 ```
 
-`IFunctionPointer*` is the reason why this library exists.
+`IFunctionPointerBase*` is the reason why this library exists.
 
-You can store a `IFunctionPointer*` and invoke it later, without knowing the return type or arguments.
+You can store a `IFunctionPointerBase*` and invoke it later, without knowing the return type or arguments.
 
-You can easily store various `IFunctionPointer*` of different types in the same container.
+You can easily store various `IFunctionPointerBase*` of different types in the same container.
 
 ## License
 

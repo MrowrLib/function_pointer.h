@@ -1,6 +1,6 @@
 #pragma once
 
-namespace function_pointers::FunctionPointers {
+namespace FunctionPointers {
 
     struct IFunctionPointerValue {
         virtual ~IFunctionPointerValue() = default;

@@ -10,17 +10,18 @@
 #include "StaticFunctionPointer.h"
 #include "function_traits.h"
 
-namespace function_pointers {
+namespace FunctionPointers {
 
     class function_pointer {
         template <typename F, typename ReturnType, typename ArgsTuple, std::size_t... I>
-        static IFunctionPointer* make_new_untyped_function_impl(F&& f, std::index_sequence<I...>) {
+        static IFunctionPointerBase*
+        make_new_untyped_function_impl(F&& f, std::index_sequence<I...>) {
             return new FunctionPointers::FunctionalFunctionPointer<
                 ReturnType, std::tuple_element_t<I, ArgsTuple>...>(std::forward<F>(f));
         }
 
         template <typename F, typename ReturnType, typename ArgsTuple, std::size_t... I>
-        static std::unique_ptr<IFunctionPointer>
+        static std::unique_ptr<IFunctionPointerBase>
         make_unique_untyped_function_impl(F&& f, std::index_sequence<I...>) {
             return std::make_unique<FunctionPointers::FunctionalFunctionPointer<
                 ReturnType, std::tuple_element_t<I, ArgsTuple>...>>(std::forward<F>(f));
@@ -142,19 +143,19 @@ namespace function_pointers {
         }
 
         template <typename ReturnType, typename... Args>
-        static IFunctionPointer* make_new_untyped(ReturnType (*func)(Args...)) {
+        static IFunctionPointerBase* make_new_untyped(ReturnType (*func)(Args...)) {
             return new FunctionPointers::StaticFunctionPointer<ReturnType(Args...)>(func);
         }
 
         template <typename T, typename ReturnType, typename... Args>
-        static IFunctionPointer* make_new_untyped(T* object, ReturnType (T::*func)(Args...)) {
+        static IFunctionPointerBase* make_new_untyped(T* object, ReturnType (T::*func)(Args...)) {
             return new FunctionPointers::MemberFunctionPointer<T, ReturnType, Args...>(
                 object, func
             );
         }
 
         template <typename F>
-        static IFunctionPointer* make_new_untyped(F&& f) {
+        static IFunctionPointerBase* make_new_untyped(F&& f) {
             using Traits     = FunctionPointers::function_traits<F>;
             using ReturnType = typename Traits::return_type;
             using ArgsTuple  = typename Traits::args_tuple;
@@ -164,14 +165,15 @@ namespace function_pointers {
         }
 
         template <typename ReturnType, typename... Args>
-        static std::unique_ptr<IFunctionPointer> make_unique_untyped(ReturnType (*func)(Args...)) {
+        static std::unique_ptr<IFunctionPointerBase> make_unique_untyped(ReturnType (*func)(Args...)
+        ) {
             return std::make_unique<FunctionPointers::StaticFunctionPointer<ReturnType(Args...)>>(
                 func
             );
         }
 
         template <typename T, typename ReturnType, typename... Args>
-        static std::unique_ptr<IFunctionPointer> make_unique_untyped(
+        static std::unique_ptr<IFunctionPointerBase> make_unique_untyped(
             T* object, ReturnType (T::*func)(Args...)
         ) {
             return std::make_unique<
@@ -179,7 +181,7 @@ namespace function_pointers {
         }
 
         template <typename F>
-        static std::unique_ptr<IFunctionPointer> make_unique_untyped(F&& f) {
+        static std::unique_ptr<IFunctionPointerBase> make_unique_untyped(F&& f) {
             using Traits     = FunctionPointers::function_traits<F>;
             using ReturnType = typename Traits::return_type;
             using ArgsTuple  = typename Traits::args_tuple;
@@ -233,7 +235,7 @@ namespace function_pointers {
 
         template <typename... Args>
         static std::unique_ptr<FunctionPointers::IFunctionPointerValue> invoke(
-            IFunctionPointer* functionPointer, Args&&... args
+            IFunctionPointerBase* functionPointer, Args&&... args
         ) {
             return std::unique_ptr<FunctionPointers::IFunctionPointerValue>(
                 functionPointer->invokeWithArgsArray(
@@ -244,7 +246,7 @@ namespace function_pointers {
 
         template <typename... Args>
         static std::unique_ptr<FunctionPointers::IFunctionPointerValue> invoke(
-            std::unique_ptr<IFunctionPointer>& functionPointer, Args&&... args
+            std::unique_ptr<IFunctionPointerBase>& functionPointer, Args&&... args
         ) {
             return std::unique_ptr<FunctionPointers::IFunctionPointerValue>(
                 functionPointer->invokeWithArgsArray(

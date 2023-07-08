@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "FunctionPointerValue.h"
-#include "IFunctionPointer.h"
+#include "ITypedFunctionPointer.h"
 
 namespace function_pointers::FunctionPointers {
 
@@ -14,7 +14,8 @@ namespace function_pointers::FunctionPointers {
     class FunctionalFunctionPointer;
 
     template <typename ReturnType, typename... Args>
-    class FunctionalFunctionPointer<ReturnType(Args...)> : public IFunctionPointer {
+    class FunctionalFunctionPointer<ReturnType(Args...)>
+        : public ITypedFunctionPointer<ReturnType(Args...)> {
         std::function<ReturnType(Args...)> _func;
 
         template <std::size_t... I>

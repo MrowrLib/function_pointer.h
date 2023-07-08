@@ -3,7 +3,6 @@
 #include <memory>
 
 #include "FunctionalFunctionPointer.h"
-#include "IFunctionPointer.h"
 #include "MemberFunctionPointer.h"
 #include "StaticFunctionPointer.h"
 
@@ -13,7 +12,8 @@ namespace function_pointers {
     struct FunctionPointer;
 
     template <typename ReturnType, typename... Args>
-    struct FunctionPointer<ReturnType(Args...)> : public IFunctionPointer {
+    struct FunctionPointer<ReturnType(Args...)>
+        : public ITypedFunctionPointer<ReturnType(Args...)> {
         std::unique_ptr<IFunctionPointer> _functionPointer;
 
     public:
@@ -42,24 +42,6 @@ namespace function_pointers {
             FunctionPointers::IFunctionPointerValue** args
         ) override {
             return _functionPointer->invokeWithArgsArray(args);
-        }
-
-        virtual ReturnType invoke(Args... args) {
-            if constexpr (!std::is_same<ReturnType, void>::value) {
-                return static_cast<FunctionPointers::FunctionPointerValue<ReturnType>*>(
-                           _functionPointer->invokeWithArgsArray(
-                               new FunctionPointers::IFunctionPointerValue* [sizeof...(Args)] {
-                                   new FunctionPointers::FunctionPointerValue<Args>(args)...
-                               }
-                           )
-                )->GetValue();
-            } else {
-                _functionPointer->invokeWithArgsArray(
-                    new FunctionPointers::IFunctionPointerValue* [sizeof...(Args)] {
-                        new FunctionPointers::FunctionPointerValue<Args>(args)...
-                    }
-                );
-            }
         }
 
         virtual IFunctionPointer* inner_function_pointer() { return _functionPointer.get(); }

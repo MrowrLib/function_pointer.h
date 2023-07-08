@@ -58,6 +58,16 @@ int main() {
 
     CallThisWithAFunction(function_pointer([](int x) { _Log_("Called lambda with arg: {}", x); }));
 
+    IFunctionPointer* staticFunctionPtr =
+        function_pointer::make_new_untyped(CallMe_Static_VoidReturn_IntArg);
+
+    // Invoke the static function pointer
+    function_pointer::invoke(staticFunctionPtr, 123321);
+
+    // Get and invoke it as a TypedFunctionPointer
+    auto* typedStaticPtr = dynamic_cast<ITypedFunctionPointer<void(int)>*>(staticFunctionPtr);
+    typedStaticPtr->invoke(420);
+
     // IFunctionPointer* ptr = Ifunction_pointer(CallMe_Static_VoidReturn_IntArg);
     // function_pointer::invoke(ptr, 123456);
 

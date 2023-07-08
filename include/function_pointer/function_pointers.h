@@ -17,14 +17,13 @@ namespace FunctionPointers {
         static IFunctionPointerBase*
         make_new_untyped_function_impl(F&& f, std::index_sequence<I...>) {
             return new FunctionPointers::FunctionalFunctionPointer<
-                ReturnType, std::tuple_element_t<I, ArgsTuple>...>(std::forward<F>(f));
+                ReturnType(std::tuple_element_t<I, ArgsTuple>...)>(std::forward<F>(f));
         }
 
         template <typename F, typename ReturnType, typename ArgsTuple, std::size_t... I>
         static std::unique_ptr<IFunctionPointerBase>
         make_unique_untyped_function_impl(F&& f, std::index_sequence<I...>) {
-            return std::make_unique<FunctionPointers::FunctionalFunctionPointer<
-                ReturnType, std::tuple_element_t<I, ArgsTuple>...>>(std::forward<F>(f));
+            return std::make_unique<FunctionPointers::FunctionalFunctionPointer<ReturnType(std::tuple_element_t<I, ArgsTuple>...)>>(std::forward<F>(f));
         }
 
         template <typename F, typename ReturnType, typename ArgsTuple, std::size_t... I>
@@ -38,7 +37,7 @@ namespace FunctionPointers {
         template <typename F, typename ReturnType, typename ArgsTuple, std::size_t... I>
         static FunctionPointer<ReturnType(std::tuple_element_t<I, ArgsTuple>...)>*
         make_new_function_impl(F&& f, std::index_sequence<I...>) {
-            return new FunctionPointer<ReturnType, std::tuple_element_t<I, ArgsTuple>...>(
+            return new FunctionPointer<ReturnType(std::tuple_element_t<I, ArgsTuple>...)>(
                 std::function<ReturnType(std::tuple_element_t<I, ArgsTuple>...)>(std::forward<F>(f))
             );
         }
@@ -47,7 +46,7 @@ namespace FunctionPointers {
         static std::unique_ptr<FunctionPointer<ReturnType(std::tuple_element_t<I, ArgsTuple>...)>>
         make_unique_function_impl(F&& f, std::index_sequence<I...>) {
             return std::make_unique<
-                FunctionPointer<ReturnType, std::tuple_element_t<I, ArgsTuple>...>>(
+                FunctionPointer<ReturnType(std::tuple_element_t<I, ArgsTuple>...)>>(
                 std::function<ReturnType(std::tuple_element_t<I, ArgsTuple>...)>(std::forward<F>(f))
             );
         }

@@ -164,8 +164,16 @@ auto* functionPointer = new_function_pointer([]() { /* ... */ }); // Lambda or s
 If you declare a function which accepts a `FunctionPointer` as an argument, you must specify the return type and arguments.
 
 ```cpp
-void MyFunction(FunctionPointer<void, int> functionPointer) {
+void MyFunction(FunctionPointer<void(int)> functionPointer) {
     functionPointer.invoke(123);
+}
+```
+
+If you want a pure abstract virtual interface, you can use the `IFunctionPointer` interface.
+
+```cpp
+void MyFunction(IFunctionPointer<void(int)>* functionPointer) {
+    functionPointer->invoke(123);
 }
 ```
 
@@ -178,14 +186,14 @@ If you want to store a function pointer without specifying the return type or ar
 ```cpp
 // Using the `function_pointer` helper function
 // which returns std::unique_ptr<IFunctionPointerBase>
-auto functionPointer = Ifunction_pointer(CallMe); // Static function pointer
-auto functionPointer = Ifunction_pointer<this, &Example::CallMe); // Member function pointer
-auto functionPointer = Ifunction_pointer([]() { /* ... */ }); // Lambda or std::function
+auto functionPointer = function_pointer_base(CallMe); // Static function pointer
+auto functionPointer = function_pointer_base<this, &Example::CallMe); // Member function pointer
+auto functionPointer = function_pointer_base([]() { /* ... */ }); // Lambda or std::function
 
 // There is also a helper which returns a raw pointer
-IFunctionPointerBase* functionPointer = new_ifunction_pointer(CallMe); // Static function pointer
-IFunctionPointerBase* functionPointer = new_ifunction_pointer<this, &Example::CallMe); // Member function pointer
-IFunctionPointerBase* functionPointer = new_ifunction_pointer([]() { /* ... */ }); // Lambda or std::function
+IFunctionPointerBase* functionPointer = new_function_pointer_base(CallMe); // Static function pointer
+IFunctionPointerBase* functionPointer = new_function_pointer_base<this, &Example::CallMe); // Member function pointer
+IFunctionPointerBase* functionPointer = new_function_pointer_base([]() { /* ... */ }); // Lambda or std::function
 ```
 
 `IFunctionPointerBase*` is the reason why this library exists.

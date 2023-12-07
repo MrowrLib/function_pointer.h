@@ -1,6 +1,8 @@
 #include <_Log_.h>
 #include <function_pointer.h>
 
+#include <vector>
+
 void CallMe_Static_VoidReturn_NoArgs() { _Log_("Called CallMe_Static_VoidReturn_NoArgs"); }
 int  CallMe_Static_IntReturn_NoArgs() {
     _Log_("Called CallMe_Static_IntReturn_NoArgs");
@@ -54,6 +56,12 @@ struct Blah {
     void Foo(int x) { _Log_("Called Foo with arg: {}", x); }
 };
 
+std::vector<FunctionPointer<int()>> myFunctionPointers;
+
+void StoreFunctionPointerForLater(FunctionPointer<int()> function) {
+    myFunctionPointers.push_back(function);
+}
+
 int main() {
     CallThisWithAFunction(FunctionPointer<void(int)>(CallMe_Static_VoidReturn_IntArg));
     CallThisWithAFunction(function_pointer(CallMe_Static_VoidReturn_IntArg));
@@ -87,6 +95,19 @@ int main() {
     auto autoCallStatic = function_pointer(CallMe_Static_IntReturn_NoArgs);
     _Log_("Got int again: {}", autoCallStatic.invoke());
 
+    //
+
+    StoreFunctionPointerForLater(CallMe_Static_IntReturn_NoArgs);
+
+    SomeClass someClass;
+    StoreFunctionPointerForLater({&someClass, &SomeClass::CallMe_Member_IntReturn_NoArgs});
+
+    StoreFunctionPointerForLater(function_pointer([]() { return 123; }));
+
+    for (auto& function : myFunctionPointers) {
+        _Log_("Got int from stored function: {}", function.invoke());
+    }
+
     // IFunctionPointerBase* ptr = Ifunction_pointer(CallMe_Static_VoidReturn_IntArg);
     // function_pointer::invoke(ptr, 123456);
 
@@ -111,10 +132,10 @@ int main() {
 
     // _Log_("STATIC FUNCTION EXAMPLES");
 
-    // IFunctionPointerBase* functionPtr =
-    //     function_pointer::make_new_untyped(CallMe_Static_VoidReturn_NoArgs);
-    // functionPtr->invoke();
-    // delete functionPtr;
+    IFunctionPointerBase* functionPtr =
+        function_pointer::make_new_untyped(CallMe_Static_VoidReturn_NoArgs);
+    function_pointer::invoke(functionPtr);
+    delete functionPtr;
 
     // FunctionPointer<void, int>* functionPointer1 =
     //     new FunctionPointer<void, int>(CallMe_Static_VoidReturn_IntArg);
@@ -166,10 +187,13 @@ int main() {
 
     // SomeClass someClass;
 
-    // functionPtr =
-    //     function_pointer::make_new(&someClass, &SomeClass::CallMe_Member_VoidReturn_NoArgs);
-    // functionPtr->invoke();
-    // delete functionPtr;
+    functionPtr =
+        function_pointer::make_new(&someClass, &SomeClass::CallMe_Member_VoidReturn_NoArgs);
+    function_pointer::invoke(functionPtr);
+    delete functionPtr;
+
+    auto* callableFunctionPtr = new_function_pointer([]() {});
+    delete callableFunctionPtr;
 
     // function =
     //     function_pointer::make_unique(&someClass, &SomeClass::CallMe_Member_VoidReturn_NoArgs);

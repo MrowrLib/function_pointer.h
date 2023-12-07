@@ -5,7 +5,7 @@
 namespace FunctionPointers {
 
     struct IFunctionPointerBase {
-        virtual ~IFunctionPointerBase() {}
+        virtual ~IFunctionPointerBase() = default;
         virtual FunctionPointers::IFunctionPointerValue* invokeWithArgsArray(
             FunctionPointers::IFunctionPointerValue** args
         ) = 0;

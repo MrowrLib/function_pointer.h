@@ -92,7 +92,7 @@ target_link_libraries(Example PRIVATE function_pointer::function_pointer)
         {
             "kind": "git",
             "repository": "https://github.com/MrowrLib/Packages.git",
-            "baseline": "e5081db63b09f3ccbb841cb1318765924ecfe9b5",
+            "baseline": "cd78ba157aae728a1e08f4e84dc1c9c64314510d",
             "packages": ["mrowr-function-pointer"]
         }
     ]

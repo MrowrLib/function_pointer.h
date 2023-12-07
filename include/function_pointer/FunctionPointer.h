@@ -13,8 +13,6 @@ namespace FunctionPointers {
 
     template <typename ReturnType, typename... Args>
     struct FunctionPointer<ReturnType(Args...)> : public IFunctionPointer<ReturnType(Args...)> {
-        bool _destroyFunctionPointerBaseOnDestruction = true;
-
         // Shared so that FunctionPointer is copyable
         std::shared_ptr<IFunctionPointer<ReturnType(Args...)>> _functionPointer;
 

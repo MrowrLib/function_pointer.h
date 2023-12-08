@@ -8,6 +8,6 @@ namespace FunctionPointers {
         virtual ~IFunctionPointerBase() = default;
         virtual FunctionPointers::IFunctionPointerValue* invokeWithArgsArray(
             FunctionPointers::IFunctionPointerValue** args
-        ) = 0;
+        ) const = 0;
     };
 }

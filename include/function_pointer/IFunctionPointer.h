@@ -12,7 +12,7 @@ namespace FunctionPointers {
 
     template <typename ReturnType, typename... Args>
     struct IFunctionPointer<ReturnType(Args...)> : public IFunctionPointerBase {
-        virtual ReturnType invoke(Args... args) {
+        virtual ReturnType invoke(Args... args) const {
             if constexpr (!std::is_same<ReturnType, void>::value) {
                 return static_cast<FunctionPointers::FunctionPointerValue<ReturnType>*>(
                            invokeWithArgsArray(

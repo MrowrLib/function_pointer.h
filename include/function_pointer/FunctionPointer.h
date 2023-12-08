@@ -40,7 +40,7 @@ namespace FunctionPointers {
 
         FunctionPointers::IFunctionPointerValue* invokeWithArgsArray(
             FunctionPointers::IFunctionPointerValue** args
-        ) override {
+        ) const override {
             return _functionPointer->invokeWithArgsArray(args);
         }
 
